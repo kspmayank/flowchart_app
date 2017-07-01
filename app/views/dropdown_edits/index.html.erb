@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Dropdown Edits</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dropdowns</th>
+      <th>Name</th>
+      <th>Content</th>
+      <th>Zoomlvl</th>
+      <th>Approved</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @dropdown_edits.each do |dropdown_edit| %>
+      <tr>
+        <td><%= dropdown_edit.dropdowns %></td>
+        <td><%= dropdown_edit.name %></td>
+        <td><%= dropdown_edit.content %></td>
+        <td><%= dropdown_edit.zoomlvl %></td>
+        <td><%= dropdown_edit.approved %></td>
+        <td><%= link_to 'Show', dropdown_edit %></td>
+        <td><%= link_to 'Edit', edit_dropdown_edit_path(dropdown_edit) %></td>
+        <td><%= link_to 'Destroy', dropdown_edit, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Dropdown Edit', new_dropdown_edit_path %>

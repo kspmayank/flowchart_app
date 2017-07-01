@@ -1,0 +1,142 @@
+<!-- <p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%# @flowchart.name %>
+</p>
+
+
+
+<p>
+  <strong>Content:</strong> -->
+  <style type="text/css">
+  	.tree{
+  		width : calc(1500px + <%=@flowchart.widthp%>%);
+  		position: relative;
+  		top: 150px;
+  	}
+
+  	.zoombox{
+  		position: fixed;
+  		right: 20px;
+  		top: 10px;
+  		color: #23282e;
+  	}
+
+  	.fc-name{
+  		position: fixed;
+  		top: 10px;
+  		color: #23282e;
+  	}
+
+  	.add-child,.remove-node,.change-name{
+  		display: none;
+  	}
+
+  	.edit-btn{
+	    position: absolute;
+	    right: 250px;
+	    top: 10px;
+  	}
+  </style>
+  <h1 class="fc-name"><%=@flowchart.name%></h1>
+  <a href="/flowcharts/<%=@flowchart.id%>/edit" class="btn btn-primary edit-btn">Suggest an Edit</a>
+  <div class="zoombox">
+  	<button type="button" class="btn minus-zoom" style="background: #23282e; color: #e1ffff;">-</button>
+	<span class="zoomlvl"><%=@flowchart.zoomlvl%></span>X Zoom
+	<button type="button" class="btn plus-zoom" style="background: #23282e; color: #e1ffff;">+</button>
+  </div>
+      <div class="tree">
+		  <%= @flowchart.content.html_safe %>
+      </div>
+
+
+  <script type="text/javascript">
+  	$(document).ready(function(){
+  		$(".tree").css("zoom",<%=@flowchart.zoomlvl%>);
+
+  		$(".minus-zoom").on("click",function(){
+  			var z = $(".tree").css("zoom");
+  			if (z>0.5) {
+  				z = parseFloat(z)-0.1;
+	  			$(".tree").css("zoom",z);
+	  			$(".zoomlvl").html(z.toFixed(1));
+	  		}
+  		});
+  		$(".plus-zoom").on("click",function(){
+  			var z = $(".tree").css("zoom");
+  			if (z<5.0) {
+  				z = parseFloat(z)+0.1;
+	  			$(".tree").css("zoom",z);
+	  			$(".zoomlvl").html(z.toFixed(1));
+	  		}
+  		});
+  	});
+  </script>
+<!-- </p>
+
+<p>
+  <strong>Zoomlvl:</strong>
+  <%# @flowchart.zoomlvl %>
+</p>
+
+<p>
+  <strong>Approved:</strong>
+  <%# @flowchart.approved %>
+</p>
+ -->
+
+<%# link_to 'Edit', edit_flowchart_path(@flowchart) %> 
+<%# link_to 'Back', flowcharts_path %>
+
+    <script type="text/javascript">
+        var Childgame = (function(){
+          return{
+            addchild : function(elem){
+              elem.on("click", function(){
+                if($(this).parents("li").first().find("ul").length==0)
+                {
+                  $(this).parents("li").first().append("<ul><li><span><img src='/plus.png' class='add-child' /></span><a href='javascript:void(0)' style='color: red;'>Great Grand Child</a><span><img src='/minus.png' class='remove-node' /></span><span><img src='/edit.png' class='change-name' /></span></li></ul>");
+                }else{                
+                  $(this).parents("li").first().find("ul").first().append("<li><span><img src='/plus.png' class='add-child' /></span><a href='javascript:void(0)' style='color: red;'>Great Grand Child</a><span><img src='/minus.png' class='remove-node' /></span><span><img src='/edit.png' class='change-name' /></span></li>");
+                }
+              });
+            },
+            removenode : function(elem){
+              elem.on("click",function(){
+                $(this).parents("li").first().remove();
+              });
+            },
+            initonadd : function(){
+              $('body').on('DOMNodeInserted', function (e) {
+                Childgame.addchild($(e.target).find(".add-child"));
+                Childgame.removenode($(e.target).find(".remove-node"));
+                Childgame.changename($(e.target).find(".change-name"));
+                Childgame.changecolor($(e.target).find("a"));
+              });
+            },
+            changename : function(elem){
+              elem.on("click", function(){
+                console.log($(this).prev().prev());
+                var exname = $(this).parent().prev().prev().html();
+                var newname = prompt("Change Node Name :", exname);
+                $(this).parent().prev().prev().html(newname);
+              });
+            },
+            changecolor : function(elem){
+              elem.on("click",function(){
+                var excolor = $(this).css("color");
+                var newcolor = prompt("Enter Node Color to change :");
+                $(this).css("color",newcolor);
+              });
+            }
+          }
+        })();
+
+        Childgame.addchild($(".add-child"));
+        Childgame.removenode($(".remove-node"));
+        Childgame.initonadd();
+        Childgame.changename($(".change-name"));
+        Childgame.changecolor($("a"));
+    </script>
+

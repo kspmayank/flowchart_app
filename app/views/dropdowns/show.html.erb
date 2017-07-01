@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @dropdown.name %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @dropdown.content %>
+</p>
+
+<p>
+  <strong>Zoomlvl:</strong>
+  <%= @dropdown.zoomlvl %>
+</p>
+
+<p>
+  <strong>Approved:</strong>
+  <%= @dropdown.approved %>
+</p>
+
+<%= link_to 'Edit', edit_dropdown_path(@dropdown) %> |
+<%= link_to 'Back', dropdowns_path %>

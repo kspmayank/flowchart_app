@@ -1,0 +1,179 @@
+<%= form_for(flowchart) do |f| %>
+  <% if flowchart.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(flowchart.errors.count, "error") %> prohibited this flowchart from being saved:</h2>
+
+      <ul>
+      <% flowchart.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+<style type="text/css">
+    .tree{
+      width : calc(1500px + <%=@flowchart.widthp%>%);
+      /*position: relative;*/
+      /*top: 150px;*/
+    }
+
+    .zoombox{
+      position: absolute;
+      left: 20px;
+      top: 50px;
+      color: #23282e;
+    }
+
+  </style>
+
+  <div class="field" style="display: block; position: relative;">
+    <div class="zoombox" style="z-index: 5;">
+      <button type="button" class="btn minus-zoom" style="background: #23282e; color: #e1ffff;">-</button>
+      <span class="zoomlvl"><%=@flowchart.zoomlvl%></span>X Zoom
+      <button type="button" class="btn plus-zoom" style="background: #23282e; color: #e1ffff;">+</button>
+    </div>
+
+    <%= f.label :content %>
+    <%= f.hidden_field :content %>
+    <% if flowchart.content %>
+      <div class="tree">
+      <%= flowchart.content.html_safe %>
+      </div>
+    <% else %>
+      <div class="tree">
+      <ul>
+        <li>
+          <span><img src="/plus.png" class="add-child" /></span><a href="javascript:void(0)" style="color: red;">Parent</a><span><img src="/minus.png" class="remove-node" /></span><span><img src="/edit.png" class="change-name" /></span>
+        </li>
+      </ul>
+    </div>
+    <%end%>
+  </div>
+
+  <div class="field">
+    <%= f.label :zoomlvl %>
+    <%= f.text_field :zoomlvl %>
+  </div>
+
+  <!-- <div class="field">
+    <%# f.label :approved %>
+    <%# f.text_field :approved %>
+  </div> -->
+
+  <div class="field">
+    <%= f.label :widthp %>
+    <%= f.text_field :widthp %>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-success u-fc">Save Flowchart</button>
+    <%# f.submit "Update Record", :class => "btn btn-primary" %>
+  </div>
+<% end %>
+
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $(".tree").find("ul").first().css("padding-top","150px");
+      var h = $(".tree").find("li").first().height();
+      h = h + 200;
+      $(".tree").height(h);
+      $(".tree").css("zoom",<%=@flowchart.zoomlvl%>);
+
+      $(".minus-zoom").on("click",function(){
+        console.log("hi");
+        var z = $(".tree").css("zoom");
+        if (z>0.5) {
+          z = parseFloat(z)-0.1;
+          $(".tree").css("zoom",z);
+          $(".zoomlvl").html(z.toFixed(1));
+          var h = $(".tree").find("li").first().height();
+          h = h + 200;
+          $(".tree").height(h);
+        }
+      });
+      $(".plus-zoom").on("click",function(){
+        var z = $(".tree").css("zoom");
+        if (z<5.0) {
+          z = parseFloat(z)+0.1;
+          $(".tree").css("zoom",z);
+          $(".zoomlvl").html(z.toFixed(1));
+          var h = $(".tree").find("li").first().height();
+          h = h + 200;
+          $(".tree").height(h);          
+        }
+      });
+
+      $(".u-fc").on("click",function(){
+        var content = $('.tree').html().replace(/"/g , "'");
+        $('#flowchart_content').val(content);
+      });
+
+    });
+  </script>
+
+
+    <script type="text/javascript">
+        var Childgame = (function(){
+          return{
+            addchild : function(elem){
+              elem.on("click", function(){
+                if($(this).parents("li").first().find("ul").length==0)
+                {
+                  $(this).parents("li").first().append("<ul><li><span><img src='/plus.png' class='add-child' /></span><a href='javascript:void(0)' style='color: red;'>Great Grand Child</a><span><img src='/minus.png' class='remove-node' /></span><span><img src='/edit.png' class='change-name' /></span></li></ul>");
+                }else{                
+                  $(this).parents("li").first().find("ul").first().append("<li><span><img src='/plus.png' class='add-child' /></span><a href='javascript:void(0)' style='color: red;'>Great Grand Child</a><span><img src='/minus.png' class='remove-node' /></span><span><img src='/edit.png' class='change-name' /></span></li>");
+                }
+              });
+            },
+            removenode : function(elem){
+              elem.on("click",function(){
+                $(this).parents("li").first().remove();
+                Childgame.fcresize();
+              });
+            },
+            initonadd : function(){
+              $('body').on('DOMNodeInserted', function (e) {
+                Childgame.addchild($(e.target).find(".add-child"));
+                Childgame.removenode($(e.target).find(".remove-node"));
+                Childgame.changename($(e.target).find(".change-name"));
+                Childgame.changecolor($(e.target).find("a"));
+                Childgame.fcresize();
+              });
+            },
+            changename : function(elem){
+              elem.on("click", function(){
+                console.log($(this).prev().prev());
+                var exname = $(this).parent().prev().prev().html();
+                var newname = prompt("Change Node Name :", exname);
+                $(this).parent().prev().prev().html(newname);
+              });
+            },
+            changecolor : function(elem){
+              elem.on("click",function(){
+                var excolor = $(this).css("color");
+                var newcolor = prompt("Enter Node Color to change :");
+                $(this).css("color",newcolor);
+              });
+            },
+            fcresize : function(){
+              var h = $(".tree").find("li").first().height();
+              h = h + 200;
+              $(".tree").height(h);
+            }
+          }
+        })();
+
+        Childgame.addchild($(".add-child"));
+        Childgame.removenode($(".remove-node"));
+        Childgame.initonadd();
+        Childgame.changename($(".change-name"));
+        Childgame.changecolor($("a"));
+    </script>
+

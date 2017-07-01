@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Flowcharts:</strong>
+  <%= @flowchart_edit.flowcharts %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @flowchart_edit.name %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @flowchart_edit.content %>
+</p>
+
+<p>
+  <strong>Zoomlvl:</strong>
+  <%= @flowchart_edit.zoomlvl %>
+</p>
+
+<p>
+  <strong>Approved:</strong>
+  <%= @flowchart_edit.approved %>
+</p>
+
+<%= link_to 'Edit', edit_flowchart_edit_path(@flowchart_edit) %> |
+<%= link_to 'Back', flowchart_edits_path %>

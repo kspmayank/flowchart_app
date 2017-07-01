@@ -1,0 +1,42 @@
+<%= form_for(flowchart_edit) do |f| %>
+  <% if flowchart_edit.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(flowchart_edit.errors.count, "error") %> prohibited this flowchart_edit from being saved:</h2>
+
+      <ul>
+      <% flowchart_edit.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :flowcharts_id %>
+    <%= f.text_field :flowcharts_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :content %>
+    <%= f.text_area :content %>
+  </div>
+
+  <div class="field">
+    <%= f.label :zoomlvl %>
+    <%= f.text_field :zoomlvl %>
+  </div>
+
+  <div class="field">
+    <%= f.label :approved %>
+    <%= f.text_field :approved %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
